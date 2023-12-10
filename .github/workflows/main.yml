@@ -1,0 +1,26 @@
+name: Django CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+      - name: Collect static files
+        run: python manage.py collectstatic --no-input
+      - name: Deploy to cPanel
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: erp.srmarblepolishing.in
+          username: crmrepo@erp.srmarblepolishing.in
+          password: rahul123!@#
+          destination: /home/shivmarb/erp.srmarblepolishing.in
+          exclude: |
+            .git/*
+            __pycache__/*
+            db.sqlite3
